@@ -1,17 +1,21 @@
-## Put comments here that give an overall description of what your
-## functions do
+## This collection of functions is designed to efficiently
+## invert a matrix via a cacheing strategy.  When a matrix
+## is first passed to cacheSolve, it checks to see if the
+## inversion has already been computed.  If the computation
+## exists, the old result is retreived.  It should be noted
+## that the matrix being passed must be invertible.
 
-## Write a short comment describing this function
+## makeCacheMatrix establishes a free variable
+## which is used to store the inverse of the matrix passed in
 
 makeCacheMatrix <- function(x = matrix()) {
   inv <- NULL # inv will contain the computed inverse
   
   set <- function(y) {
-    # Should a test for x == y be done here?  Don't want to
-    # rerun the computation if the new matrix is the same.
     x <<- y
     inv <<- NULL
   }
+  
   get <- function() x
   setinv <- function(inverse) inv <<- inverse
   getinv <- function() inv
@@ -20,44 +24,23 @@ makeCacheMatrix <- function(x = matrix()) {
                  setinv = setinv, getinv = getinv))
 }
 
-## Write a short comment describing this function
+## cacheSolve accepts the matrix that we want to invert. If
+## this matrix has been inverted previously, it returns the
+## cached version.  If it was not previously inverted, it 
+## computes the inverse and caches the result.
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  ## Return a matrix that is the inverse of 'x'
+  
   inv <- x$getinv()
+  
   if(!is.null(inv)) {
-    message("getting cahced inverse")
+    message("getting cached inverse")
     return(inv)
   }
   
-  mat <- x$get()
-  inv <- solve(mat)
-  x$setinv(inv)
+  mat <- x$get()     #Retrieve the matrix
+  inv <- solve(mat)  #Compute the inverse
+  x$setinv(inv)      #Store the inverse
   inv
 }
-
-# makeVector <- function(x = numeric()) {
-#   m <- NULL
-#   set <- function(y) {
-#     x <<- y
-#     m <<- NULL
-#   }
-#   get <- function() x
-#   setmean <- function(mean) m <<- mean
-#   getmean <- function() m
-#   list(set = set, get = get,
-#        setmean = setmean,
-#        getmean = getmean)
-# }
-
-# cachemean <- function(x, ...) {
-#   m <- x$getmean()
-#   if(!is.null(m)) {
-#     message("getting cached data")
-#     return(m)
-#   }
-#   data <- x$get()
-#   m <- mean(data, ...)
-#   x$setmean(m)
-#   m
-# }
